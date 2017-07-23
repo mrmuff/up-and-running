@@ -1,29 +1,14 @@
 provider "aws" {
-  region = "us-west-1"
+  region = "us-west-2"
+  shared_credentials_file = "/Users/me186031/.aws/credentials"
+  profile = "hellaghettokidz"
 }
-
-/*
-resource "aws_instance" "example" {
-  ami = "ami-327f5352"
-  instance_type = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.instance.id}"]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p "${var.server_port}" &
-              EOF
-  tags {
-    Name = "terraform-example"
-  }
-}
-*/
 
 resource "aws_launch_configuration" "example" {
-  image_id = "ami-73f7da13"
+  image_id = "ami-835b4efa"
   instance_type = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
-  key_name = "NorthernCaliforniaKeyPair"
+  key_name = "hellaghettokidz-key"
 
   user_data = <<-EOF
               #!/bin/bash
@@ -57,21 +42,6 @@ resource "aws_security_group" "instance" {
   }
 
 }
-
-variable "server_port" {
-  description = "Port web server listens on"
-  default = 8080
-}
-
-variable "ssh_port" {
-  description = "ssh port"
-  default = 22
-}
-/*
-output "public_ip" {
-  value = "${aws_instance.example.public_ip}"
-}
-*/
 
 resource "aws_autoscaling_group" "example" {
   launch_configuration = "${aws_launch_configuration.example.id}"
@@ -130,8 +100,4 @@ resource "aws_security_group" "elb" {
     protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-output "elb_dns_name" {
-  value = "${aws_elb.example.dns_name}"
 }
